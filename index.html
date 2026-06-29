@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Bereket İlaç Mail İmza Oluşturucu</title>
+    <link href="https://fonts.cdnfonts.com/css/gilroy-bold" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="intro" aria-labelledby="page-title">
+        <div class="brand-card">
+          <img src="assets/Bereket-Ilac-Logo.png" alt="Bereket İlaç Kozmetik A.Ş. logosu">
+        </div>
+        <div>
+          <p class="eyebrow">Bereket İlaç Kozmetik A.Ş.</p>
+          <h1 id="page-title">Bereket İlaç Mail İmza Oluşturucu</h1>
+          <p class="intro__copy">Adınızı seçin, imzanızı kopyalayın ve Gmail imza alanına yapıştırın.</p>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="İmza oluşturucu">
+        <aside class="selector-panel" aria-labelledby="employee-list-title">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Çalışanlar</p>
+              <h2 id="employee-list-title">Kişi seçimi</h2>
+            </div>
+            <span id="employeeCount" class="employee-count"></span>
+          </div>
+          <label class="search-field" for="employeeSearch">
+            <span>Çalışan ara</span>
+            <input id="employeeSearch" type="search" autocomplete="off" placeholder="Ad, ünvan veya departman">
+          </label>
+          <div id="employeeList" class="employee-list" aria-live="polite"></div>
+        </aside>
+
+        <section class="preview-panel" aria-labelledby="preview-title">
+          <div class="panel-heading panel-heading--row">
+            <div>
+              <p class="eyebrow">Önizleme</p>
+              <h2 id="preview-title">Mail imzanız</h2>
+            </div>
+            <button id="copyButton" class="copy-button" type="button" disabled>
+              İmzayı Kopyala
+            </button>
+          </div>
+
+          <div id="signaturePreview" class="signature-preview" aria-live="polite">
+            <div class="empty-state">
+              Sol taraftan bir çalışan seçtiğinizde imza önizlemesi burada görünecek.
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="employees.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
