@@ -320,6 +320,8 @@ h2 {
 .guide-video {
   display: block;
   width: 100%;
+  aspect-ratio: 2560 / 1218;
+  height: auto;
   max-height: 720px;
   border: 1px solid var(--line);
   border-radius: 8px;
