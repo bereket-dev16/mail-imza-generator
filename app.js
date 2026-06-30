@@ -19,6 +19,10 @@ function escapeHtml(value = "") {
     .replaceAll("'", "&#39;");
 }
 
+function formatMultilineText(value = "") {
+  return escapeHtml(value).replace(/\r?\n/g, "<br>");
+}
+
 function normalizeUrl(url = "") {
   const trimmedUrl = String(url).trim();
 
@@ -102,34 +106,36 @@ function buildIconRow(iconUrl, iconWidth, iconHeight, value, href, options = {})
   }
 
   const safeIconUrl = options.allowLocalImage ? String(iconUrl || "").trim() : normalizeImageUrl(iconUrl);
-  const safeValue = escapeHtml(value);
+  const safeValue = formatMultilineText(value);
   const safeHref = href ? escapeHtml(href) : "";
-  const lineHeight = options.lineHeight || "17px";
-  const paddingBottom = options.paddingBottom || "8px";
-  const textSize = options.textSize || "11px";
+  const lineHeight = options.lineHeight || "20px";
+  const paddingBottom = options.paddingBottom || "10px";
+  const textSize = options.textSize || "13px";
   const iconAlt = options.iconAlt || "";
+  const linkColor = options.linkColor || "#1e1e1e";
+  const linkTextDecoration = options.linkTextDecoration || "none";
+  const verticalAlign = options.verticalAlign || "top";
   const content = safeHref
-    ? `<a href="${safeHref}" style="color:#1e1e1e;text-decoration:none;">${safeValue}</a>`
+    ? `<a href="${safeHref}" style="color:${linkColor};text-decoration:${linkTextDecoration};">${safeValue}</a>`
     : safeValue;
 
   return `
     <tr>
-      <td style="width:23px;padding:0 8px ${paddingBottom} 0;vertical-align:top;">
+      <td style="width:30px;padding:0 10px ${paddingBottom} 0;vertical-align:${verticalAlign};">
         ${safeIconUrl ? `<img src="${escapeHtml(safeIconUrl)}" width="${iconWidth}" height="${iconHeight}" alt="${escapeHtml(iconAlt)}" style="display:block;width:${iconWidth}px;height:${iconHeight}px;border:0;outline:none;text-decoration:none;">` : ""}
       </td>
-      <td style="padding:0 0 ${paddingBottom} 0;font-family:${SIGNATURE_FONT};font-size:${textSize};font-weight:300;line-height:${lineHeight};color:#1e1e1e;vertical-align:top;">${content}</td>
+      <td style="padding:0 0 ${paddingBottom} 0;font-family:${SIGNATURE_FONT};font-size:${textSize};font-weight:300;line-height:${lineHeight};color:#1e1e1e;vertical-align:${verticalAlign};">${content}</td>
     </tr>`;
 }
 
 function generateSignature(employee, options = {}) {
   const isPreview = options.preview === true;
-  const logoUrl = isPreview ? getLocalSignatureAssetUrl("sirket-logo.png") : getEmailSignatureImageUrl(COMPANY.logoUrl);
-  const smallMarkUrl = isPreview ? getLocalSignatureAssetUrl("sirket-ikon.png") : getEmailSignatureImageUrl(COMPANY.companyIconUrl || COMPANY.logoUrl);
-  const phoneIconUrl = isPreview ? getLocalSignatureAssetUrl("phone-ikon.png") : getEmailSignatureImageUrl(COMPANY.phoneIconUrl);
-  const locationIconUrl = isPreview ? getLocalSignatureAssetUrl("lokasyon-ikon.png") : getEmailSignatureImageUrl(COMPANY.locationIconUrl);
-  const websiteIconUrl = isPreview ? getLocalSignatureAssetUrl("url-ikon.png") : getEmailSignatureImageUrl(COMPANY.webIconUrl);
-  const linkedinIconUrl = isPreview ? getLocalSignatureAssetUrl("url-ikon.png") : getEmailSignatureImageUrl(COMPANY.linkedinIconUrl);
-  const handlerIconUrl = isPreview ? getLocalSignatureAssetUrl("handler-ikon.png") : getEmailSignatureImageUrl(COMPANY.catalogIconUrl);
+  const logoUrl = getEmailSignatureImageUrl(COMPANY.logoUrl);
+  const smallMarkUrl = getEmailSignatureImageUrl(COMPANY.companyIconUrl || COMPANY.logoUrl);
+  const phoneIconUrl = getEmailSignatureImageUrl(COMPANY.phoneIconUrl);
+  const locationIconUrl = getEmailSignatureImageUrl(COMPANY.locationIconUrl);
+  const websiteIconUrl = getEmailSignatureImageUrl(COMPANY.webIconUrl);
+  const linkedinIconUrl = getEmailSignatureImageUrl(COMPANY.linkedinIconUrl);
   const websiteUrl = normalizeUrl(COMPANY.website);
   const catalogUrl = normalizeUrl(COMPANY.catalogUrl || COMPANY.website);
   const phoneLine = getPhoneLine(employee);
@@ -138,58 +144,56 @@ function generateSignature(employee, options = {}) {
   const showProfile = hasProfileImage(employee);
   const identityVisualCell = showProfile
     ? `
-      <td style="width:46px;padding:0 12px 0 0;vertical-align:middle;">
-        <img src="${escapeHtml(normalizeImageUrl(employee.profileImage))}" width="38" height="38" alt="${escapeHtml(employee.name)} profil fotoğrafı" style="display:block;width:38px;height:38px;border:0;outline:none;text-decoration:none;border-radius:19px;">
+      <td style="width:136px;padding:0 16px 0 0;vertical-align:middle;">
+        <img src="${escapeHtml(normalizeImageUrl(employee.profileImage))}" width="120" height="120" alt="${escapeHtml(employee.name)} profil fotoğrafı" style="display:block;width:120px;height:120px;border:0;outline:none;text-decoration:none;border-radius:60px;">
       </td>`
     : `
-      <td style="width:46px;padding:0 12px 0 0;vertical-align:middle;">
-        ${smallMarkUrl ? `<img src="${escapeHtml(smallMarkUrl)}" width="34" height="32" alt="${escapeHtml(COMPANY.name)} ikon" style="display:block;width:34px;height:32px;border:0;outline:none;text-decoration:none;">` : ""}
+      <td style="width:85px;padding:0 14px 0 0;vertical-align:middle;">
+        ${smallMarkUrl ? `<img src="${escapeHtml(smallMarkUrl)}" width="71" height="40" alt="${escapeHtml(COMPANY.name)} ikon" style="display:block;width:71px;height:40px;border:0;outline:none;text-decoration:none;">` : ""}
       </td>`;
   const departmentLine = employee.department
-    ? `<div style="margin-top:0;font-family:${SIGNATURE_FONT};font-size:10px;font-weight:300;font-style:italic;line-height:13px;color:#1e1e1e;">${escapeHtml(employee.department)}</div>`
+    ? `<div style="margin-top:1px;font-family:${SIGNATURE_FONT};font-size:13px;font-weight:300;font-style:italic;line-height:16px;color:#1e1e1e;">${escapeHtml(employee.department)}</div>`
     : "";
   const linkedinLine = linkedinUrl
-    ? buildIconRow(linkedinIconUrl, 11, 11, "LinkedIn", linkedinUrl, { iconAlt: "LinkedIn", paddingBottom: "0", allowLocalImage: isPreview })
+    ? buildIconRow(linkedinIconUrl, 18, 18, "LinkedIn", linkedinUrl, { iconAlt: "LinkedIn", paddingBottom: "0", linkTextDecoration: "underline", allowLocalImage: isPreview })
     : "";
+  const logoColumnPaddingTop = showProfile ? "64px" : "42px";
 
   return `
-<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="width:100%;max-width:600px;border-collapse:collapse;font-family:${SIGNATURE_FONT};color:#1e1e1e;">
+<table cellpadding="0" cellspacing="0" border="0" role="presentation" style="width:100%;max-width:720px;border-collapse:collapse;font-family:${SIGNATURE_FONT};color:#1e1e1e;">
   <tr>
-    <td style="padding:24px 20px 22px 22px;vertical-align:top;">
+    <td style="padding:26px 24px 24px 24px;vertical-align:top;">
       <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="width:100%;border-collapse:collapse;font-family:${SIGNATURE_FONT};">
         <tr>
-          <td style="width:276px;vertical-align:top;">
+          <td style="width:330px;vertical-align:top;">
             <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="border-collapse:collapse;font-family:${SIGNATURE_FONT};">
               <tr>
                 ${identityVisualCell}
                 <td style="width:1px;padding:0;background:#9a9a9a;font-size:0;line-height:0;">&nbsp;</td>
-                <td style="padding:0 0 0 12px;vertical-align:middle;">
-                  <div style="font-family:${SIGNATURE_FONT};font-size:20px;font-weight:500;line-height:22px;color:#000000;white-space:nowrap;">${escapeHtml(employee.name)}</div>
-                  <div style="margin-top:1px;font-family:${SIGNATURE_FONT};font-size:12px;font-weight:500;line-height:15px;color:#000000;">${escapeHtml(employee.title)}</div>
+                <td style="padding:0 0 0 14px;vertical-align:middle;">
+                  <div style="font-family:${SIGNATURE_FONT};font-size:24px;font-weight:500;line-height:27px;color:#000000;white-space:nowrap;">${escapeHtml(employee.name)}</div>
+                  <div style="margin-top:2px;font-family:${SIGNATURE_FONT};font-size:15px;font-weight:500;line-height:18px;color:#000000;">${escapeHtml(employee.title)}</div>
                   ${departmentLine}
                 </td>
               </tr>
             </table>
 
-            <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin-top:18px;border-collapse:collapse;font-family:${SIGNATURE_FONT};">
-              ${buildIconRow(phoneIconUrl, 14, 14, phoneLine, phoneHref, { iconAlt: "Telefon", allowLocalImage: isPreview })}
-              ${buildIconRow(locationIconUrl, 11, 18, COMPANY.address, "", { iconAlt: "Adres", lineHeight: "15px", allowLocalImage: isPreview })}
-              ${buildIconRow(websiteIconUrl, 14, 14, getWebsiteLabel(COMPANY.website), websiteUrl, { iconAlt: "Web sitesi", paddingBottom: "0", allowLocalImage: isPreview })}
+            <table cellpadding="0" cellspacing="0" border="0" role="presentation" style="margin-top:22px;border-collapse:collapse;font-family:${SIGNATURE_FONT};">
+              ${buildIconRow(phoneIconUrl, 20, 20, phoneLine, phoneHref, { iconAlt: "Telefon", allowLocalImage: isPreview })}
+              ${buildIconRow(locationIconUrl, 20, 20, COMPANY.address, "", { iconAlt: "Adres", lineHeight: "18px", verticalAlign: "middle", allowLocalImage: isPreview })}
+              ${buildIconRow(websiteIconUrl, 20, 20, getWebsiteLabel(COMPANY.website), websiteUrl, { iconAlt: "Web sitesi", paddingBottom: "0", linkTextDecoration: "underline", allowLocalImage: isPreview })}
               ${linkedinLine}
             </table>
 
-            <div style="margin-top:18px;font-family:${SIGNATURE_FONT};font-size:11px;font-weight:300;line-height:15px;color:#1e1e1e;">
-              Kataloğumuzu incelemek için ${catalogUrl ? `<a href="${escapeHtml(catalogUrl)}" style="color:${COMPANY.colors.orange};text-decoration:none;">tıklayınız.</a>` : `<span style="color:${COMPANY.colors.orange};">tıklayınız.</span>`}
+            <div style="margin-top:22px;font-family:${SIGNATURE_FONT};font-size:13px;font-weight:300;line-height:18px;color:#1e1e1e;">
+              Kataloğumuzu incelemek için ${catalogUrl ? `<a href="${escapeHtml(catalogUrl)}" style="color:${COMPANY.colors.orange};text-decoration:underline;">tıklayınız.</a>` : `<span style="color:${COMPANY.colors.orange};text-decoration:underline;">tıklayınız.</span>`}
             </div>
           </td>
-          <td style="width:20px;font-size:0;line-height:0;">&nbsp;</td>
-          <td style="width:262px;padding:36px 0 0 0;vertical-align:top;text-align:right;">
+          <td style="width:22px;font-size:0;line-height:0;">&nbsp;</td>
+          <td style="width:320px;padding:${logoColumnPaddingTop} 0 0 0;vertical-align:top;text-align:right;">
             ${websiteUrl ? `<a href="${escapeHtml(websiteUrl)}" style="text-decoration:none;">` : ""}
-              ${logoUrl ? `<img src="${escapeHtml(logoUrl)}" width="258" height="92" alt="${escapeHtml(COMPANY.name)} logosu" style="display:block;width:258px;height:92px;border:0;outline:none;text-decoration:none;margin:0 0 0 auto;">` : ""}
+              ${logoUrl ? `<img src="${escapeHtml(logoUrl)}" width="320" height="180" alt="${escapeHtml(COMPANY.name)} logosu" style="display:block;width:320px;height:180px;border:0;outline:none;text-decoration:none;margin:0 0 0 auto;">` : ""}
             ${websiteUrl ? "</a>" : ""}
-            ${catalogUrl ? `<a href="${escapeHtml(catalogUrl)}" style="display:inline-block;text-decoration:none;margin-top:14px;">` : `<span style="display:inline-block;margin-top:14px;">`}
-              ${handlerIconUrl ? `<img src="${escapeHtml(handlerIconUrl)}" width="16" height="19" alt="Katalog bağlantısı" style="display:block;width:16px;height:19px;border:0;outline:none;text-decoration:none;">` : ""}
-            ${catalogUrl ? "</a>" : "</span>"}
           </td>
         </tr>
       </table>

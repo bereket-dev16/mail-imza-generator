@@ -308,6 +308,24 @@ h2 {
   background: #ffffff;
 }
 
+.guide-panel {
+  margin-top: 18px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.guide-video {
+  display: block;
+  width: 100%;
+  max-height: 720px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #111111;
+}
+
 .empty-state {
   display: grid;
   min-height: 240px;
@@ -396,7 +414,8 @@ h2 {
   }
 
   .selector-panel,
-  .preview-panel {
+  .preview-panel,
+  .guide-panel {
     padding: 14px;
   }
 
