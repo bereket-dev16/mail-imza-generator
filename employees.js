@@ -155,8 +155,8 @@ const employees = [
     showProfileImage: false
   },
   {
-    id: "sena-efe-altun",
-    name: "Sena Efe Altun",
+    id: "sena-altun",
+    name: "Sena Altun",
     title: "Biyolog | Mikrobiyoloji Laboratuvar Sorumlusu",
     department: "Biologist | Microbiology Laboratory Manager",
     email: "",
